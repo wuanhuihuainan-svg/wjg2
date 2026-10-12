@@ -1,0 +1,8 @@
+{
+  "baseline_score": null,
+  "candidate_score": null,
+  "reviewers": [],
+  "regressions_passed": null,
+  "changed_dimension": "one dimension only",
+  "evidence": "Attach actual before/after outputs, validator results, frame samples, and reviewer identities. Do not treat this template as a completed evaluation."
+}

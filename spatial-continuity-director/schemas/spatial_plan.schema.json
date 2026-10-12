@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Spatial Continuity Plan v4",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["plan_id", "target_duration_s", "asset_registry", "visual_bible", "anchors", "audio_ledger", "blocking_map", "segments", "approvals"],
+  "properties": {
+    "plan_id": {"type": "string", "minLength": 3},
+    "target_duration_s": {"type": "number", "minimum": 1},
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "asset_registry": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["asset_id", "asset_type", "primary_role", "status", "bound_to", "pollution_flags"],
+        "properties": {
+          "asset_id": {"type": "string", "minLength": 3},
+          "asset_type": {"enum": ["scene", "character", "prop", "keyframe", "video", "audio"]},
+          "primary_role": {"enum": ["space", "identity", "prop_design", "pose_state", "motion", "style", "dialogue"]},
+          "status": {"enum": ["confirmed", "pending", "conflict", "derived"]},
+          "bound_to": {"type": "array", "items": {"type": "string"}},
+          "aliases": {"type": "array", "items": {"type": "string"}},
+          "pollution_flags": {"type": "array", "items": {"enum": ["embedded_person", "strong_background", "text", "watermark", "wardrobe_conflict", "lighting_conflict", "scale_conflict", "multi_character_ambiguous"]}}
+        }
+      }
+    },
+    "visual_bible": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["style_prompt", "locked_fields"],
+      "properties": {
+        "style_prompt": {"type": "string", "minLength": 20},
+        "locked_fields": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "anchors": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "relative_location", "state", "source_asset_id"],
+        "properties": {
+          "id": {"type": "string"},
+          "relative_location": {"type": "string"},
+          "state": {"type": "string"},
+          "source_asset_id": {"type": "string"}
+        }
+      }
+    },
+    "audio_ledger": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["audio_id", "speaker", "text", "estimated_duration_s", "segment_id"],
+        "properties": {
+          "audio_id": {"type": "string"},
+          "speaker": {"type": "string"},
+          "text": {"type": "string"},
+          "estimated_duration_s": {"type": "number", "minimum": 0},
+          "segment_id": {"type": "string"}
+        }
+      }
+    },
+    "blocking_map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["routes", "spatiotemporal_collision_verified", "physical_motion_verified", "causality_verified", "axis_and_eyeline_verified"],
+      "properties": {
+        "routes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["subject_id", "color", "from", "to", "start_s", "end_s", "occupancy_zone", "action"],
+            "properties": {
+              "subject_id": {"type": "string"},
+              "color": {"type": "string"},
+              "from": {"type": "string"},
+              "to": {"type": "string"},
+              "start_s": {"type": "number", "minimum": 0},
+              "end_s": {"type": "number", "exclusiveMinimum": 0},
+              "occupancy_zone": {"type": "string"},
+              "action": {"type": "string"},
+              "clearance_note": {"type": "string"}
+            }
+          }
+        },
+        "spatiotemporal_collision_verified": {"const": true},
+        "physical_motion_verified": {"const": true},
+        "causality_verified": {"const": true},
+        "axis_and_eyeline_verified": {"const": true}
+      }
+    },
+    "segments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["segment_id", "duration_s", "risk_score", "risk_level", "primary_action", "receive_state", "action_contract", "handoff", "reference_inputs", "start_keyframe", "camera_instruction"],
+        "properties": {
+          "segment_id": {"type": "string"},
+          "duration_s": {"type": "number", "minimum": 1},
+          "risk_score": {"type": "integer", "minimum": 0},
+          "risk_level": {"enum": ["low", "medium", "high"]},
+          "primary_action": {"type": "string"},
+          "receive_state": {"type": "object"},
+          "action_contract": {"type": "string", "minLength": 10},
+          "handoff": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["strategy", "state", "fallback_cut"],
+            "properties": {
+              "strategy": {"enum": ["stable_frame", "action_match", "eyeline", "prop_match", "motion_direction", "occlusion", "sound_bridge", "deliberate_cut"]},
+              "state": {"type": "object"},
+              "fallback_cut": {"type": "string"}
+            }
+          },
+          "reference_inputs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["asset_id", "role", "priority", "attached"],
+              "properties": {
+                "asset_id": {"type": "string"},
+                "role": {"type": "string"},
+                "priority": {"type": "integer", "minimum": 1},
+                "attached": {"type": "boolean"},
+                "conflict_rule": {"type": "string"}
+              }
+            }
+          },
+          "start_keyframe": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["asset_id", "primary_driver", "qc_passed"],
+            "properties": {
+              "asset_id": {"type": "string"},
+              "primary_driver": {"const": true},
+              "qc_passed": {"const": true}
+            }
+          },
+          "camera_instruction": {"type": "string"},
+          "dialogue_ids": {"type": "array", "items": {"type": "string"}},
+          "edit_handle_s": {"type": "number", "minimum": 0, "maximum": 2}
+        }
+      }
+    },
+    "approvals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_binding_confirmed", "spatial_plan_confirmed", "start_keyframes_confirmed"],
+      "properties": {
+        "asset_binding_confirmed": {"const": true},
+        "spatial_plan_confirmed": {"const": true},
+        "start_keyframes_confirmed": {"const": true}
+      }
+    }
+  }
+}

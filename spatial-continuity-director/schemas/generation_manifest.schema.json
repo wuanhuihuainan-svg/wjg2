@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Spatial Continuity Generation Manifest v4",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["manifest_id", "plan_id", "canvas", "model_capabilities", "target_duration_s", "visual_bible", "asset_registry", "audio_ledger", "segments", "approvals"],
+  "properties": {
+    "manifest_id": {"type": "string", "minLength": 3},
+    "plan_id": {"type": "string", "minLength": 3},
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "canvas_id", "node_ids"],
+      "properties": {
+        "platform": {"const": "xiaoyunque"},
+        "canvas_id": {"type": "string", "minLength": 1},
+        "node_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "model_capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model", "verified_in_canvas", "max_duration_s", "max_reference_inputs", "supports_first_frame", "supports_last_frame"],
+      "properties": {
+        "provider": {"type": "string"},
+        "model": {"type": "string"},
+        "verified_in_canvas": {"const": true},
+        "max_duration_s": {"type": "number", "minimum": 1},
+        "max_reference_inputs": {"type": "integer", "minimum": 0},
+        "supports_first_frame": {"type": "boolean"},
+        "supports_last_frame": {"type": "boolean"},
+        "supports_audio": {"type": "boolean"}
+      }
+    },
+    "target_duration_s": {"type": "number", "minimum": 1},
+    "visual_bible": {"type": "string", "minLength": 20},
+    "asset_registry": {"type": "array", "minItems": 2, "items": {"type": "object"}},
+    "audio_ledger": {"type": "array", "items": {"type": "object"}},
+    "segments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["segment_id", "duration_s", "generation_order", "primary_driver", "attached_references", "unattached_assets", "start_state", "content_prompt", "second_breakdown", "handoff", "fallback", "pre_generation_qc", "post_generation_qc"],
+        "properties": {
+          "segment_id": {"type": "string"},
+          "duration_s": {"type": "number", "minimum": 1},
+          "generation_order": {"type": "integer", "minimum": 1},
+          "depends_on": {"type": ["string", "null"]},
+          "primary_driver": {"type": "string", "minLength": 1},
+          "attached_references": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["asset_id", "role"],
+              "properties": {"asset_id": {"type": "string"}, "role": {"type": "string"}}
+            }
+          },
+          "unattached_assets": {"type": "array", "items": {"type": "string"}},
+          "start_state": {"type": "object"},
+          "content_prompt": {"type": "string", "minLength": 20},
+          "second_breakdown": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+          "handoff": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["strategy", "state", "receiver", "strict_frame_match"],
+            "properties": {
+              "strategy": {"enum": ["stable_frame", "action_match", "eyeline", "prop_match", "motion_direction", "occlusion", "sound_bridge", "deliberate_cut"]},
+              "state": {"type": "object"},
+              "receiver": {"type": "string"},
+              "strict_frame_match": {"type": "boolean"}
+            }
+          },
+          "fallback": {"type": "string", "minLength": 5},
+          "pre_generation_qc": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["identity", "space", "props", "composition", "passed"],
+            "properties": {
+              "identity": {"type": "boolean"},
+              "space": {"type": "boolean"},
+              "props": {"type": "boolean"},
+              "composition": {"type": "boolean"},
+              "passed": {"const": true}
+            }
+          },
+          "post_generation_qc": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status"],
+            "properties": {
+              "status": {"enum": ["pending", "passed", "failed"]},
+              "checked_frames": {"type": "array", "items": {"type": "string"}},
+              "failures": {"type": "array", "items": {"type": "string"}}
+            }
+          }
+        }
+      }
+    },
+    "approvals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_and_keyframes_confirmed", "model_and_prompts_confirmed"],
+      "properties": {
+        "asset_and_keyframes_confirmed": {"const": true},
+        "model_and_prompts_confirmed": {"const": true}
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Spatial Continuity Director｜空间连续性导演"
+  short_description: "小云雀：多资产绑定、合成首帧、约30秒分段连续生成与抽帧质检"
+  default_prompt: "Use $spatial-continuity-director to bind my script, scene, character, and prop assets, then plan and quality-check an approximately 30-second continuous video in Xiaoyunque."
+policy:
+  allow_implicit_invocation: true

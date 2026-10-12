@@ -1,0 +1,69 @@
+{
+  "manifest_id": "manifest-demo-30s-v4",
+  "plan_id": "plan-demo-30s-v4",
+  "canvas": {"platform": "xiaoyunque", "canvas_id": "canvas-demo", "node_ids": ["asset-registry", "blocking", "kf-01", "kf-02", "kf-03", "video-01", "video-02", "video-03"]},
+  "model_capabilities": {"provider": "selected-provider", "model": "canvas-selected-model", "verified_in_canvas": true, "max_duration_s": 10, "max_reference_inputs": 3, "supports_first_frame": true, "supports_last_frame": false, "supports_audio": true},
+  "target_duration_s": 30,
+  "visual_bible": "写实办公室短剧，冷灰环境与柔和暖色侧光，克制表演，稳定镜头与清晰空间关系。",
+  "asset_registry": [
+    {"asset_id": "SCENE-01-REF", "role": "space"},
+    {"asset_id": "CHAR-01-REF", "role": "CHAR-01 identity"},
+    {"asset_id": "CHAR-02-REF", "role": "CHAR-02 identity"},
+    {"asset_id": "PROP-01-REF", "role": "prop design"}
+  ],
+  "audio_ledger": [
+    {"audio_id": "AUD-01", "segment_id": "SEG-02"},
+    {"audio_id": "AUD-02", "segment_id": "SEG-02"}
+  ],
+  "segments": [
+    {
+      "segment_id": "SEG-01",
+      "duration_s": 10,
+      "generation_order": 1,
+      "depends_on": null,
+      "primary_driver": "KF-01",
+      "attached_references": [{"asset_id": "KF-01", "role": "composition-space-pose"}, {"asset_id": "CHAR-01-REF", "role": "CHAR-01 identity only"}, {"asset_id": "CHAR-02-REF", "role": "CHAR-02 identity only"}],
+      "unattached_assets": ["SCENE-01-REF", "PROP-01-REF"],
+      "start_state": {"door": "closed", "CHAR-01": "outside-door", "CHAR-02": "table-east"},
+      "content_prompt": "以 KF-01 主导构图、空间和起始姿态；人物参考只锁定对应身份。CHAR-01 到把手侧用左手开门，门打开后跨过门槛并走到桌西侧停住。摄影机从右后方缓慢侧移跟随。",
+      "second_breakdown": [{"time": "0-3s", "state": "开门"}, {"time": "3-8s", "state": "进入并走近"}, {"time": "8-10s", "state": "桌边停住"}],
+      "handoff": {"strategy": "stable_frame", "state": {"door": "half-open", "CHAR-01": "table-west", "CHAR-02": "table-east", "PROP-01": "CHAR-01-right-hand"}, "receiver": "KF-02 reconstructed from stable last frame", "strict_frame_match": true},
+      "fallback": "在门框遮挡处切到桌边中景",
+      "pre_generation_qc": {"identity": true, "space": true, "props": true, "composition": true, "passed": true},
+      "post_generation_qc": {"status": "pending", "checked_frames": [], "failures": []}
+    },
+    {
+      "segment_id": "SEG-02",
+      "duration_s": 10,
+      "generation_order": 2,
+      "depends_on": "SEG-01",
+      "primary_driver": "KF-02",
+      "attached_references": [{"asset_id": "KF-02", "role": "composition-space-pose"}, {"asset_id": "PROP-01-REF", "role": "prop design only"}],
+      "unattached_assets": ["SCENE-01-REF", "CHAR-01-REF", "CHAR-02-REF"],
+      "start_state": {"door": "half-open", "CHAR-01": "table-west", "CHAR-02": "table-east", "PROP-01": "CHAR-01-right-hand"},
+      "content_prompt": "以 KF-02 主导构图和起始状态。两人保持桌两侧与对话轴；完成已登记对白后，CHAR-01 把蓝色文件夹放到桌面中心并让手离开，道具归属更新为桌面。固定中景。",
+      "second_breakdown": [{"time": "0-5s", "state": "对白"}, {"time": "5-8s", "state": "文件放桌"}, {"time": "8-10s", "state": "手离开并形成道具接棒"}],
+      "handoff": {"strategy": "prop_match", "state": {"PROP-01": "table-center", "CHAR-02": "looking-at-PROP-01"}, "receiver": "SEG-03 opens on the same folder position", "strict_frame_match": false},
+      "fallback": "文件夹特写接 CHAR-02 反应镜头",
+      "pre_generation_qc": {"identity": true, "space": true, "props": true, "composition": true, "passed": true},
+      "post_generation_qc": {"status": "pending", "checked_frames": [], "failures": []}
+    },
+    {
+      "segment_id": "SEG-03",
+      "duration_s": 10,
+      "generation_order": 3,
+      "depends_on": "SEG-02",
+      "primary_driver": "KF-03",
+      "attached_references": [{"asset_id": "KF-03", "role": "composition-space-pose"}, {"asset_id": "CHAR-02-REF", "role": "CHAR-02 identity only"}],
+      "unattached_assets": ["SCENE-01-REF", "CHAR-01-REF", "PROP-01-REF"],
+      "start_state": {"PROP-01": "table-center", "CHAR-02": "looking-at-PROP-01"},
+      "content_prompt": "以 KF-03 主导构图、空间和起始姿态；CHAR-02 参考只锁定身份。CHAR-02 先看桌面文件，再抬眼看 CHAR-01 并静止，其他人物和道具不移动。固定中近景轻微推近，不跨轴。",
+      "second_breakdown": [{"time": "0-4s", "state": "看文件"}, {"time": "4-8s", "state": "抬眼"}, {"time": "8-10s", "state": "静止收束"}],
+      "handoff": {"strategy": "deliberate_cut", "state": {"PROP-01": "table-center", "CHAR-02": "looking-at-CHAR-01"}, "receiver": "end of sequence", "strict_frame_match": false},
+      "fallback": "停在 CHAR-02 反应特写",
+      "pre_generation_qc": {"identity": true, "space": true, "props": true, "composition": true, "passed": true},
+      "post_generation_qc": {"status": "pending", "checked_frames": [], "failures": []}
+    }
+  ],
+  "approvals": {"asset_and_keyframes_confirmed": true, "model_and_prompts_confirmed": true}
+}

@@ -1,0 +1,10 @@
+[
+  {"id":"unverified-model-capabilities","verified_in_canvas":false,"expected":"locked"},
+  {"id":"unconfirmed-assets-keyframes","asset_and_keyframes_confirmed":false,"expected":"locked"},
+  {"id":"unconfirmed-model-prompts","model_and_prompts_confirmed":false,"expected":"locked"},
+  {"id":"too-many-attached-references","max_reference_inputs":2,"attached_reference_count":3,"expected":"locked"},
+  {"id":"segment-over-model-duration","max_duration_s":10,"segment_duration_s":12,"expected":"locked"},
+  {"id":"failed-start-keyframe-qc","pre_generation_qc_passed":false,"expected":"locked"},
+  {"id":"dependency-qc-pending","segment":"SEG-02","depends_on":"SEG-01","dependency_post_qc":"pending","expected":"locked"},
+  {"id":"confirmed-sequential-plan","verified_in_canvas":true,"approvals":true,"reference_count_within_limit":true,"durations_within_limit":true,"pre_generation_qc_passed":true,"expected":"unlocked"}
+]

@@ -1,0 +1,18 @@
+[
+  {"id":"missing-scene-assets","scenario":"仅提供剧本和人物资产","expected_gate":"asset_selection","must_surface":["场景候选板","选中小图单独拆出","候选不是锁定资产"]},
+  {"id":"missing-character-assets","scenario":"提供剧本和场景资产，但没有人物资产","expected_gate":"asset_selection","must_surface":["每位人物独立候选","角色逐个绑定","人物数量不增减"]},
+  {"id":"scene-with-embedded-person","scenario":"场景图里已有陌生人物，同时上传主角人物图","expected_gate":"asset_binding","must_surface":["embedded_person","空场景底图","不能让场景人物成为角色参考","合成首帧"]},
+  {"id":"character-strong-background","scenario":"人物参考图带有强烈户外背景，但剧本发生在室内","expected_gate":"asset_binding","must_surface":["strong_background","干净人物板","人物图只约束身份","单一主驱动图"]},
+  {"id":"alias-conflict","scenario":"剧本中的小周与周宁可能是同一人，资产只写周先生","expected_gate":"asset_binding","must_surface":["别名映射","binding_conflict","不得自动合并"]},
+  {"id":"reference-limit","scenario":"两个人物、一个场景、一个道具和一个尾帧，但模型只允许三张图","expected_gate":"reference_matrix","must_surface":["primary_driver","参考职责","unattached_assets","不得宣称全部已附加"]},
+  {"id":"single-static","scenario":"单人坐下后抬头，未要求机位运动","expected_gate":"ready","must_surface":["低风险","一个主要动作链","合成首帧 QC"]},
+  {"id":"shared-corridor","scenario":"两人先后穿过同一窄门，俯视路线重合","expected_gate":"blocking","must_surface":["shared_zone","时间错开","等待点","同一时刻不碰撞"]},
+  {"id":"prop-handoff","scenario":"人物1将文件递给人物2","expected_gate":"blocking","must_surface":["递出与接收站位","接触后归属更新一次","手别","因果链"]},
+  {"id":"dialogue-audio","scenario":"双人对白共8秒并有一次递文件动作","expected_gate":"audio","must_surface":["audio_ledger","对白恰好一次","音频与动作余量","必要时拆段"]},
+  {"id":"axis-flip","scenario":"下一段人物左右位置反转但没有绕行过程","expected_gate":"blocking","must_surface":["180度轴","屏幕左右","中性镜头或重新建立空间"]},
+  {"id":"thirty-second-two-person","scenario":"用户要求约30秒，双人、人物图+场景图+剧本、对白和道具交接","expected_gate":"segment_strategy","must_surface":["2至4段","风险计分","接棒矩阵","每段合成首帧","稳定剪接版"]},
+  {"id":"thirty-second-ensemble","scenario":"舞台上三位演员移动并要求30秒一镜到底","expected_gate":"segment_strategy","must_surface":["实验一镜版","稳定剪接版","节点能力验证","不把群戏当默认长镜头"]},
+  {"id":"strict-continuation","scenario":"下一条必须接人物刚把文件放桌的动作","expected_gate":"handoff","must_surface":["稳定尾帧","handoff_state","下一段 start_state","顺序生成"]},
+  {"id":"editorial-bridge","scenario":"模型不支持尾帧输入，但允许剪辑连接","expected_gate":"handoff","must_surface":["视线/道具/遮挡/声音接棒","不强求逐像素匹配","回退剪点"]},
+  {"id":"post-generation-drift","scenario":"首帧正确，中段换脸且桌子移动","expected_gate":"qc","must_surface":["首中尾抽帧","只修失败片段","重建首帧或减少参考","两次失败后拆短"]}
+]

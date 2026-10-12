@@ -1,0 +1,97 @@
+{
+  "plan_id": "plan-demo-30s-v4",
+  "target_duration_s": 30,
+  "assumptions": ["场景参考中的路人不是剧本角色，先生成空场景底图"],
+  "asset_registry": [
+    {"asset_id": "SCENE-01-REF", "asset_type": "scene", "primary_role": "space", "status": "confirmed", "bound_to": ["SCENE-01"], "aliases": ["会议室"], "pollution_flags": ["embedded_person"]},
+    {"asset_id": "SCENE-01-PLATE", "asset_type": "scene", "primary_role": "space", "status": "derived", "bound_to": ["SCENE-01"], "aliases": ["会议室空场景底图"], "pollution_flags": []},
+    {"asset_id": "CHAR-01-REF", "asset_type": "character", "primary_role": "identity", "status": "confirmed", "bound_to": ["CHAR-01"], "aliases": ["林然"], "pollution_flags": ["strong_background"]},
+    {"asset_id": "CHAR-02-REF", "asset_type": "character", "primary_role": "identity", "status": "confirmed", "bound_to": ["CHAR-02"], "aliases": ["周宁"], "pollution_flags": []},
+    {"asset_id": "PROP-01-REF", "asset_type": "prop", "primary_role": "prop_design", "status": "confirmed", "bound_to": ["PROP-01"], "aliases": ["蓝色文件夹"], "pollution_flags": []},
+    {"asset_id": "KF-01", "asset_type": "keyframe", "primary_role": "pose_state", "status": "derived", "bound_to": ["SEG-01"], "aliases": [], "pollution_flags": []},
+    {"asset_id": "KF-02", "asset_type": "keyframe", "primary_role": "pose_state", "status": "derived", "bound_to": ["SEG-02"], "aliases": [], "pollution_flags": []},
+    {"asset_id": "KF-03", "asset_type": "keyframe", "primary_role": "pose_state", "status": "derived", "bound_to": ["SEG-03"], "aliases": [], "pollution_flags": []}
+  ],
+  "visual_bible": {
+    "style_prompt": "写实办公室短剧，冷灰环境与柔和暖色侧光，克制表演，稳定镜头与清晰空间关系。",
+    "locked_fields": ["人物身份", "会议室布局", "主光方向", "蓝色文件夹设计"]
+  },
+  "anchors": [
+    {"id": "A-DOOR", "relative_location": "画面左后方玻璃门", "state": "关闭", "source_asset_id": "SCENE-01-PLATE"},
+    {"id": "A-TABLE", "relative_location": "房间中央长桌", "state": "固定", "source_asset_id": "SCENE-01-PLATE"},
+    {"id": "A-WINDOW", "relative_location": "画面右侧整面窗", "state": "关闭", "source_asset_id": "SCENE-01-PLATE"}
+  ],
+  "audio_ledger": [
+    {"audio_id": "AUD-01", "speaker": "CHAR-01", "text": "文件我带来了。", "estimated_duration_s": 2.0, "segment_id": "SEG-02"},
+    {"audio_id": "AUD-02", "speaker": "CHAR-02", "text": "放桌上吧。", "estimated_duration_s": 1.7, "segment_id": "SEG-02"}
+  ],
+  "blocking_map": {
+    "routes": [
+      {"subject_id": "CHAR-01", "color": "blue", "from": "P1-DOOR", "to": "P1-TABLE-W", "start_s": 1, "end_s": 8, "occupancy_zone": "door-to-table-lane", "action": "开门后进入并走到桌西侧", "clearance_note": "CHAR-02 在桌东侧静止"},
+      {"subject_id": "CHAR-02", "color": "green", "from": "P2-TABLE-E", "to": "P2-TABLE-E", "start_s": 0, "end_s": 18, "occupancy_zone": "table-east", "action": "站立等待并注视 CHAR-01"},
+      {"subject_id": "CAM-01", "color": "yellow", "from": "C1", "to": "C2", "start_s": 1, "end_s": 8, "occupancy_zone": "door-side-camera-lane", "action": "缓慢侧向跟随", "clearance_note": "始终位于 CHAR-01 右后方"}
+    ],
+    "spatiotemporal_collision_verified": true,
+    "physical_motion_verified": true,
+    "causality_verified": true,
+    "axis_and_eyeline_verified": true
+  },
+  "segments": [
+    {
+      "segment_id": "SEG-01",
+      "duration_s": 10,
+      "risk_score": 5,
+      "risk_level": "medium",
+      "primary_action": "CHAR-01 开门进入并走到桌边",
+      "receive_state": {"door": "closed", "CHAR-02": "table-east-facing-door", "PROP-01": "CHAR-01-right-hand"},
+      "action_contract": "CHAR-01 到把手侧，用左手开门，跨过门槛，沿通道到桌西侧停住。",
+      "handoff": {"strategy": "stable_frame", "state": {"door": "half-open", "CHAR-01": "table-west", "CHAR-02": "table-east", "PROP-01": "CHAR-01-right-hand"}, "fallback_cut": "在门框遮挡处切到桌边中景"},
+      "reference_inputs": [
+        {"asset_id": "KF-01", "role": "composition-space-pose", "priority": 1, "attached": true, "conflict_rule": "primary_driver"},
+        {"asset_id": "CHAR-01-REF", "role": "CHAR-01 identity only", "priority": 2, "attached": true},
+        {"asset_id": "CHAR-02-REF", "role": "CHAR-02 identity only", "priority": 2, "attached": true}
+      ],
+      "start_keyframe": {"asset_id": "KF-01", "primary_driver": true, "qc_passed": true},
+      "camera_instruction": "C1 到 C2 缓慢侧移跟随，保持在 CHAR-01 右后方",
+      "dialogue_ids": [],
+      "edit_handle_s": 0.7
+    },
+    {
+      "segment_id": "SEG-02",
+      "duration_s": 10,
+      "risk_score": 7,
+      "risk_level": "medium",
+      "primary_action": "两人对白并把文件放到桌上",
+      "receive_state": {"door": "half-open", "CHAR-01": "table-west", "CHAR-02": "table-east", "PROP-01": "CHAR-01-right-hand"},
+      "action_contract": "CHAR-01 说完台词后将文件放到桌面中心，手离开后 PROP-01 归属更新为 table-center。",
+      "handoff": {"strategy": "prop_match", "state": {"PROP-01": "table-center", "CHAR-01": "looking-at-CHAR-02", "CHAR-02": "looking-at-PROP-01"}, "fallback_cut": "蓝色文件夹特写接反应镜头"},
+      "reference_inputs": [
+        {"asset_id": "KF-02", "role": "composition-space-pose", "priority": 1, "attached": true, "conflict_rule": "primary_driver"},
+        {"asset_id": "PROP-01-REF", "role": "prop design only", "priority": 2, "attached": true}
+      ],
+      "start_keyframe": {"asset_id": "KF-02", "primary_driver": true, "qc_passed": true},
+      "camera_instruction": "固定中景，保持对话轴与桌面可见",
+      "dialogue_ids": ["AUD-01", "AUD-02"],
+      "edit_handle_s": 0.7
+    },
+    {
+      "segment_id": "SEG-03",
+      "duration_s": 10,
+      "risk_score": 2,
+      "risk_level": "low",
+      "primary_action": "CHAR-02 看向文件并抬眼回应",
+      "receive_state": {"PROP-01": "table-center", "CHAR-01": "looking-at-CHAR-02", "CHAR-02": "looking-at-PROP-01"},
+      "action_contract": "CHAR-02 先看桌面文件，再抬眼看 CHAR-01，最终静止；其他人和道具不移动。",
+      "handoff": {"strategy": "deliberate_cut", "state": {"PROP-01": "table-center", "CHAR-02": "looking-at-CHAR-01"}, "fallback_cut": "停在 CHAR-02 反应特写"},
+      "reference_inputs": [
+        {"asset_id": "KF-03", "role": "composition-space-pose", "priority": 1, "attached": true, "conflict_rule": "primary_driver"},
+        {"asset_id": "CHAR-02-REF", "role": "CHAR-02 identity only", "priority": 2, "attached": true}
+      ],
+      "start_keyframe": {"asset_id": "KF-03", "primary_driver": true, "qc_passed": true},
+      "camera_instruction": "固定中近景，轻微推近但不跨轴",
+      "dialogue_ids": [],
+      "edit_handle_s": 0.7
+    }
+  ],
+  "approvals": {"asset_binding_confirmed": true, "spatial_plan_confirmed": true, "start_keyframes_confirmed": true}
+}

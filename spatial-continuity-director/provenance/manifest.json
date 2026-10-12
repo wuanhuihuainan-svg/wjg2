@@ -1,0 +1,25 @@
+{
+  "skill_id": "spatial-continuity-director",
+  "display_name": "Spatial Continuity Director｜空间连续性导演",
+  "version": "4.0.0",
+  "provenance_marker": "Aquaura24",
+  "marker_policy": "The marker is a tamper-evident provenance signal, not a claim to legal ownership by itself.",
+  "upgrade_date": "2026-09-11",
+  "method": "Original skill revised for multi-reference binding, complexity-aware segmentation, editorial handoffs, and frame-level QC. External sources informed principles; their text and identities were not imported wholesale.",
+  "research_sources": [
+    {
+      "title": "video-prompt-engineer",
+      "url": "https://github.com/Arch-Dog/video-prompt-engineer",
+      "commit": "644b5f0347eb39e6587aa52cef221c555bb0d72a",
+      "license": "MIT",
+      "used_for": ["fixed asset planning", "action causality", "segment duration", "transition anchors", "quality rubric"]
+    },
+    {
+      "title": "create-storyboard-skill",
+      "url": "https://github.com/TateZhouSiu/create-storyboard-skill",
+      "commit": "4b8662e2fee51b37488c77952bbfa302bfeaf36c",
+      "license": "MIT",
+      "used_for": ["reference input matrix", "handoff planning", "edit boundary fallbacks", "pre-generation keyframe review"]
+    }
+  ]
+}

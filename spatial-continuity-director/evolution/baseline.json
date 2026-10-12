@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-09-11",
+  "revision": "4.0.0",
+  "validation": {
+    "skill_creator_quick_validate": "PASS",
+    "schema_and_invariant_check": "PASS (performed before packaging; validator not included)",
+    "regression_contract_count": 16,
+    "schema_examples": "PASS"
+  },
+  "behavioral_generation_test": "NOT_RUN",
+  "note": "No real video generation was performed during this structural upgrade; output quality must be verified in Xiaoyunque with actual assets."
+}
